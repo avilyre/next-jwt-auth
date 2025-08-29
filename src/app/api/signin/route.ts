@@ -1,4 +1,5 @@
 import { signJwt } from "@/_lib/jwt";
+import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -17,12 +18,11 @@ export async function POST(request: NextRequest) {
 
   const token = await signJwt({ email: userData.email });
 
-  const res = NextResponse.json({ success: true });
-  res.cookies.set('token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    path: '/',
-    maxAge: 60
+  const res = NextResponse.json({
+    success: true,
+    token,
+  }, {
+    status: 200
   });
 
   return res;

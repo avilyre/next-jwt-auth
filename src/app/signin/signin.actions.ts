@@ -4,6 +4,7 @@ import { SigninFormSchema } from "./signin.schemas";
 import { $ZodFlattenedError } from "zod/v4/core";
 import z from "zod";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 export type SigninFormProps = {
   email: string;
@@ -47,11 +48,29 @@ export async function signin(_state: SigninFormState, formData: FormData) {
   const response = await fetch('http://localhost:3000/api/signin', {
     method: 'POST',
     body: JSON.stringify(user),
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 
   const signinResponse = await response.json();
 
-  if (response.status === 200) redirect('/signup');
+  if (response.status === 200) {
+    const cookieStore = await cookies();
+    const { token } = signinResponse;
+
+    cookieStore.set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: 60 * 60,
+    })
+
+    redirect('/profile')
+  };
+
+
 
   return {
       type: 'auth',
