@@ -11,13 +11,11 @@ export type SigninFormProps = {
 }
 
 export type SigninFormErrors = {
-  type: 'form'
   error: $ZodFlattenedError<SigninFormProps>['fieldErrors'];
 }
 
 export type SigninResponseError = {
-  type: 'auth',
-  error: {
+  authError: {
     status: number;
     message: string;
   }
@@ -38,7 +36,6 @@ export async function signin(_state: SigninFormState, formData: FormData) {
 
   if (!validationResult.success) {
     const errors: SigninFormErrors = {
-      type: 'form',
       error: z.flattenError(validationResult.error).fieldErrors,
     };
     return errors;
@@ -54,10 +51,9 @@ export async function signin(_state: SigninFormState, formData: FormData) {
   if (response.status === 200) redirect('/signup');
 
   return {
-      type: 'auth',
-      error: {
-        status: response.status,
-        message: signinResponse.message,
-      },
-    } as SigninResponseError
+    authError: {
+      status: response.status,
+      message: signinResponse.message,
+    },
+  }
 }

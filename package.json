@@ -5,11 +5,12 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "server": "npx json-server --watch ./src/database.json",
+    "server": "npx json-server --watch --port 8080 ./src/database.json",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "jose": "^6.1.0",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",

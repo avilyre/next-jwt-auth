@@ -1,12 +1,12 @@
 'use client'
 
 import { useActionState } from "react";
-import { signin, SigninFormErrors } from "../signin.actions";
+import { signin, SigninFormState } from "../signin.actions";
 import { Input } from "@/components/input";
 import { Button } from "@/components/button";
 
 export function SigninForm() {
-  const [state, action, isPending] = useActionState(signin, {} as SigninFormErrors )
+  const [state, action, isPending] = useActionState(signin, {} as SigninFormState)
 
   return (
     <form action={action} className="flex items-center justify-center h-screen">
@@ -20,15 +20,19 @@ export function SigninForm() {
           name="email"
           label="Email"
           placeholder="johndoe@example.com"
-          error={'error' in state && state?.error?.email ? state?.error?.email[0] : undefined}
+          error={'error' in state && state?.type === 'form' && state?.error?.email ? state.error.email[0] : undefined}
         />
 
         <Input
           name="password"
           label="Password"
           placeholder="********"
-          error={'error' in state && state?.error?.password ? state?.error?.password[0] : undefined}
+          error={'error' in state && state?.type === 'form' && state?.error?.password ? state.error.password[0] : undefined}
         />
+
+        {'error' in state && state.type === 'auth' && state.error.status !== 200 && (
+            <p className="text-sm text-red-400">{state.error.message}</p>
+        )}
 
         <footer className="mt-4 w-full">
           <Button type="submit" isLoading={isPending}>
