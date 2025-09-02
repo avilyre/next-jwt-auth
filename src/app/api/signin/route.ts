@@ -16,7 +16,9 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  const token = await signJwt({ email: userData.email });
+  delete userData.password;
+
+  const token = await signJwt({ ...userData });
 
   const res = NextResponse.json({
     success: true,

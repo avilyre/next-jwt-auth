@@ -1,9 +1,9 @@
 'use client'
 
 import { useActionState } from "react";
-import { signin, SigninFormState } from "../signin.actions";
 import { Input } from "@/components/input";
 import { Button } from "@/components/button";
+import { signin, SigninFormState } from "@/app/actions/user";
 
 export function SigninForm() {
   const [state, action, isPending] = useActionState(signin, {} as SigninFormState)

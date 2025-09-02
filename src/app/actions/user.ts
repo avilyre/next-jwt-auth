@@ -1,10 +1,10 @@
 'use server'
 
-import { SigninFormSchema } from "./signin.schemas";
 import { $ZodFlattenedError } from "zod/v4/core";
 import z from "zod";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import { SigninFormSchema } from "../signin/signin.schemas";
 
 export type SigninFormProps = {
   email: string;
@@ -25,6 +25,10 @@ export type SigninResponseError = {
 }
 
 export type SigninFormState = SigninFormProps | SigninFormErrors | SigninResponseError
+export type SignoutFormState = {
+  success: boolean;
+  message: string;
+}
 
 export async function signin(_state: SigninFormState, formData: FormData) {
   const email = formData.get('email');
@@ -77,4 +81,26 @@ export async function signin(_state: SigninFormState, formData: FormData) {
         message: signinResponse.message,
       },
     } as SigninResponseError
+}
+
+export async function signout(_state: SignoutFormState) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
+
+  console.log('triggered')
+
+  if (!token) {
+    return {
+      success: false,
+      message: 'Unauthorized',
+    }
+  }
+
+  cookieStore.delete('token');
+  redirect('/signin');
+  
+  return {
+    success: true,
+    message: 'Success',
+  }
 }

@@ -1,6 +1,6 @@
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import { AnchorHTMLAttributes, ReactNode } from "react";
 
-export interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ILinkButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   isLoading?: boolean;
   children?: ReactNode
   variant?: keyof typeof buttonVariants;
@@ -12,9 +12,8 @@ const buttonVariants = {
   outlined: 'text-blue-600 border-2 border-blue-800 bg-transparent hover:bg-blue-800/20 cursor-pointer',
 }
 
-export function Button(props: IButtonProps) {
+export function LinkButton(props: ILinkButtonProps) {
   const {
-    type = 'button',
     isLoading = false,
     variant = 'default',
     children,
@@ -23,8 +22,9 @@ export function Button(props: IButtonProps) {
   } = props;
 
   return (
-    <button
-      type={type}
+    <a
+      role="button"
+      href="#"
       className={
         `rounded-md px-4 py-2 w-full flex items-center justify-center
           ${isLoading
@@ -35,6 +35,6 @@ export function Button(props: IButtonProps) {
       {...rest}
     >
       {!isLoading ? children : <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />}
-    </button>
+    </a>
   )
 }
